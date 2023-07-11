@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     'ckeditor',
     'ckeditor_uploader',
-    'drf_multiple_model',
     'django_summernote',
     'django_cleanup',
     'blog',

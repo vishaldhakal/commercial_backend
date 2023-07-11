@@ -5,8 +5,8 @@ from rest_framework.decorators import (
     api_view,
     permission_classes,
 )
-from .models import City
-from .serializers import CitySerializer
+from .models import City, ListingType
+from .serializers import CitySerializer, ListingTypeSerializer
 from django.shortcuts import get_object_or_404
 
 
@@ -59,10 +59,58 @@ def update_city(request):
 
 def delete_city(request):
     # Retrieve the article to be deleted
-    city_id = request.GET.get("id")
-    tag = get_object_or_404(City, id=city_id)
+    slug = request.GET.get("slug")
+    city = get_object_or_404(City, slug=slug)
 
     # Delete the article
-    tag.delete()
+    city.delete()
+
+    return Response({'success': "Sucessfully Deleted City"})
+
+
+@api_view(['POST'])
+def create_listingtype(request):
+    listing_type = request.POST['listing_type']
+
+    listingtype = City(
+        listing_type=listing_type,
+    )
+    listingtype.save()
+
+    return Response({'success': "Successfully created Listing Type"})
+
+
+@api_view(['GET'])
+def get_listingtype(request):
+    listt = ListingType.objects.all()
+    serializers = ListingTypeSerializer(listt, many=True)
+    return Response({"listing_types": serializers.data})
+
+
+@api_view(['GET'])
+def listingtype_detail(request):
+    slug = request.GET.get("slug")
+    tag = City.objects.get(slug=slug)
+    serializers = CitySerializer(tag)
+    return Response({"listing_type": serializers.data})
+
+
+@api_view(['PUT'])
+def update_listingtype(request):
+    id = request.GET.get("id")
+    listingtype = get_object_or_404(ListingType, id=id)
+    listing_type = request.POST['listing_type']
+    listingtype.listing_type = listing_type
+    listingtype.save()
+    return Response({'success': "Successfully updated Listing Type"})
+
+
+def delete_listingtype(request):
+
+    id = request.GET.get("id")
+    listingtype = get_object_or_404(ListingType, id=id)
+
+    # Delete the article
+    listingtype.delete()
 
     return Response({'success': "Sucessfully Deleted City"})
