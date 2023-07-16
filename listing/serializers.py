@@ -8,6 +8,12 @@ class CitySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class CitySerializerSmall(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = ('id', 'slug', 'name')
+
+
 class ListingTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ListingType
@@ -28,21 +34,4 @@ class ListingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Listing
-        fields = (
-            'id',
-            'city',
-            'title',
-            'type_of_listing',
-            'authour',
-            'status',
-            'slug',
-            'price',
-            'description',
-            'project_address',
-            'postalcode',
-            'latitute',
-            'longitude',
-            'date_of_upload',
-            'updated_date',
-            'images',
-        )
+        fields = '__all__'

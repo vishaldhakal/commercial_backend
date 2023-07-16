@@ -1,3 +1,6 @@
+from .serializers import ListingSerializer
+from .models import Listing
+from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -5,9 +8,12 @@ from rest_framework.decorators import (
     api_view,
     permission_classes,
 )
+from rest_framework import status
 from .models import City, ListingType
-from .serializers import CitySerializer, ListingTypeSerializer
+from .serializers import CitySerializer, ListingTypeSerializer, CitySerializerSmall
 from django.shortcuts import get_object_or_404
+from account.models import UserProfile
+from account.serializers import UserProfileSerializer, UserProfileDetailSerializer
 
 
 @api_view(['POST'])
@@ -15,7 +21,14 @@ def create_city(request):
     city_name = request.POST['name']
     slug = request.POST['slug']
     city_details = request.POST['city_details']
-    # Create a new tag instance
+
+    # Check if a city with the provided slug already exists
+    existing_city = City.objects.filter(slug=slug).first()
+
+    if existing_city:
+        return Response({'error': 'A city with this slug already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create a new city instance
     city = City(
         name=city_name,
         city_details=city_details,
@@ -23,7 +36,7 @@ def create_city(request):
     )
     city.save()
 
-    return Response({'success': "Successfully created City"})
+    return Response({'success': 'Successfully created City'})
 
 
 @api_view(['GET'])
@@ -41,22 +54,26 @@ def city_detail(request):
     return Response({"city": serializers.data})
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 def update_city(request):
-    slug = request.GET.get("slug")
-    city = get_object_or_404(City, slug=slug)
+    idd = request.POST["id"]
+    city = get_object_or_404(City, id=idd)
     name = request.POST['name']
     city_details = request.POST['city_details']
-    slug = request.POST.get('slug', city.slug)
+    new_slug = request.POST['slug']
+
+    # Check if the new slug is already used by another city
+    if new_slug != city.slug and City.objects.filter(slug=new_slug).exists():
+        return Response({'error': 'A city with this slug already exists.'}, status=status.HTTP_400_BAD_REQUEST)
 
     city.name = name
-    city.slug = slug
+    city.slug = new_slug
     city.city_details = city_details
-
     city.save()
     return Response({'success': "Successfully updated City"})
 
 
+@api_view(['DELETE'])
 def delete_city(request):
     # Retrieve the article to be deleted
     slug = request.GET.get("slug")
@@ -70,11 +87,12 @@ def delete_city(request):
 
 @api_view(['POST'])
 def create_listingtype(request):
-    listing_type = request.POST['listing_type']
+    listing_type = request.POST.get('listing_type')
 
-    listingtype = City(
-        listing_type=listing_type,
-    )
+    if not listing_type:
+        return Response({'error': 'Listing type is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    listingtype = ListingType(listing_type=listing_type)
     listingtype.save()
 
     return Response({'success': "Successfully created Listing Type"})
@@ -89,28 +107,165 @@ def get_listingtype(request):
 
 @api_view(['GET'])
 def listingtype_detail(request):
-    slug = request.GET.get("slug")
-    tag = City.objects.get(slug=slug)
-    serializers = CitySerializer(tag)
+    idd = request.GET.get("id")
+    listingg = get_object_or_404(ListingType, id=idd)
+    serializers = ListingTypeSerializer(listingg)
     return Response({"listing_type": serializers.data})
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 def update_listingtype(request):
     id = request.GET.get("id")
     listingtype = get_object_or_404(ListingType, id=id)
-    listing_type = request.POST['listing_type']
+    listing_type = request.POST.get('listing_type')
+
+    if not listing_type:
+        return Response({'error': 'Listing type is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
     listingtype.listing_type = listing_type
     listingtype.save()
     return Response({'success': "Successfully updated Listing Type"})
 
 
+@api_view(['POST'])
 def delete_listingtype(request):
-
     id = request.GET.get("id")
     listingtype = get_object_or_404(ListingType, id=id)
 
-    # Delete the article
+    # Delete the listing type
     listingtype.delete()
 
-    return Response({'success': "Sucessfully Deleted City"})
+    return Response({'success': "Successfully deleted Listing Type"})
+
+
+@api_view(['GET'])
+def listing_list(request):
+    listings = Listing.objects.all()
+    serializer = ListingSerializer(listings, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_listing(request):
+    city_name = request.POST.get('city_name')
+    listing_type = request.POST.get('listing_type')
+    title = request.POST.get('title')
+    author_id = request.user.id
+    slug = request.POST.get('slug')
+    price = request.POST.get('price')
+    description = request.POST.get('description')
+    project_address = request.POST.get('project_address')
+    latitude = request.POST.get('latitude')
+    longitude = request.POST.get('longitude')
+    is_published = request.POST.get('is_published', "False") == "True"
+
+    # Retrieve the city instance
+    city = get_object_or_404(City, name=city_name)
+
+    # Retrieve the author instance
+    author = get_object_or_404(UserProfile, id=author_id)
+
+    # Retrieve the listing type instance
+    type_of_listings = ListingType.objects.get(
+        listing_type=listing_type)
+
+    # Create a new listing instance
+    listing = Listing(
+        city=city,
+        title=title,
+        type_of_listing=type_of_listings,
+        authour=author,
+        slug=slug,
+        is_published=is_published,
+        price=price,
+        description=description,
+        project_address=project_address,
+        latitude=latitude,
+        longitude=longitude
+    )
+    listing.save()
+
+    return Response({'success': "Successfully created Listing"})
+
+
+@api_view(['GET'])
+def listing_upload_initials(request):
+    listing_types = ListingType.objects.all()
+    cities = City.objects.all()
+    listing_type_ser = ListingTypeSerializer(listing_types, many=True)
+    cities_ser = CitySerializerSmall(cities, many=True)
+    return Response({"listing_types": listing_type_ser.data, "cities": cities_ser.data})
+
+
+@api_view(['GET'])
+def get_listing(request):
+    listings = Listing.objects.all()
+    serializer = ListingSerializer(listings, many=True)
+    return Response({"listings": serializer.data})
+
+
+@api_view(['GET'])
+def listing_detail(request):
+    slug = request.GET.get("slug")
+    listing = get_object_or_404(Listing, slug=slug)
+    serializer = ListingSerializer(listing)
+    return Response({"listing": serializer.data})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_listing(request):
+    p_slug = request.GET.get("p_slug")
+    slug = request.GET.get("slug")
+    listing = get_object_or_404(Listing, slug=p_slug)
+    title = request.POST.get('title')
+    listing_type = request.POST.get('listing_type')
+    price = request.POST.get('price')
+    description = request.POST.get('description')
+    project_address = request.POST.get('project_address')
+    latitude = request.POST.get('latitude')
+    longitude = request.POST.get('longitude')
+    is_published = request.POST.get('is_published', "False") == "True"
+
+    # Retrieve the listing type instance
+    type_of_listing = ListingType.objects.get_or_create(
+        listing_type=listing_type)
+
+    listing.title = title
+    listing.slug = slug
+    listing.listing_type = type_of_listing
+    listing.is_published = is_published
+    listing.price = price
+    listing.description = description
+    listing.project_address = project_address
+    listing.latitude = latitude
+    listing.longitude = longitude
+
+    listing.save()
+    return Response({'success': "Successfully updated Listing"})
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def publish_listing(request):
+    slug = request.GET.get("slug")
+    listing = get_object_or_404(Listing, slug=slug)
+
+    # Delete the listing
+    listing.is_published = True
+    listing.save()
+
+    return Response({'success': "Successfully published Listing"})
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_listing(request):
+    slug = request.GET.get("slug")
+    listing = get_object_or_404(Listing, slug=slug)
+
+    # Delete the listing
+    listing.delete()
+
+    return Response({'success': "Successfully deleted Listing"})

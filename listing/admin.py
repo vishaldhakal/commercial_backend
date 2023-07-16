@@ -21,8 +21,9 @@ class ListingImageInline(admin.TabularInline):
 
 @admin.register(Listing)
 class ListingAdmin(admin.ModelAdmin):
-    list_display = ('title', 'city', 'type_of_listing', 'authour', 'status')
-    list_filter = ('status', 'city', 'type_of_listing')
+    list_display = ('title', 'city', 'type_of_listing',
+                    'authour', 'is_published')
+    list_filter = ('is_published', 'city', 'type_of_listing')
     search_fields = ('title', 'city__name', 'authour__username')
     prepopulated_fields = {'slug': ('title',)}
     inlines = [ListingImageInline]

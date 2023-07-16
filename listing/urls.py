@@ -14,6 +14,16 @@ urlpatterns = [
     path('listingtypes/', views.get_listingtype, name='get_listingtype'),
     path('listingtype-detail/', views.listingtype_detail,
          name='listingtype_detail'),
+
     path('delete-listingtype/', views.delete_listingtype,
-         name='delete_listingtypes')
+         name='delete_listingtypes'),
+    path('listing-upload-initials/', views.listing_upload_initials,
+         name='listing_upload_initials'),
+    path('listings/', views.listing_list, name='listing-list'),
+    path('create-listing/', views.create_listing, name='create-listing'),
+    path('listing-detail/', views.listing_detail, name='listing-detail'),
+    path('update-listing/', views.update_listing, name='update-listing'),
+    path('publish-listing/', views.publish_listing, name='publish-listing'),
+    path('delete-listing/', views.delete_listing, name='delete-listing'),
+
 ]

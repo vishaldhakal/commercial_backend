@@ -14,7 +14,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8081',
-                        'https://9c29-103-163-182-137.ngrok-free.app']
+                        'https://4774-103-186-197-190.ngrok-free.app']
 
 # Application definition
 

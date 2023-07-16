@@ -1,49 +1,43 @@
 from django.db import models
-from django_summernote.fields import SummernoteTextField
+from ckeditor.fields import RichTextField
 from account.models import UserProfile
 
 
 class City(models.Model):
-    slug = models.SlugField(max_length=1000)
+    slug = models.SlugField(max_length=1000, unique=True)
     name = models.CharField(max_length=500)
-    city_details = SummernoteTextField(blank=True)
+    city_details = RichTextField(blank=True)
 
     def __str__(self):
         return self.name
 
 
 class ListingType(models.Model):
-    listing_type = models.CharField(max_length=1000)
+    listing_type = models.CharField(max_length=1000, unique=True)
 
     def __str__(self):
         return self.listing_type
 
 
 class Listing(models.Model):
-    STATUS_CHOICES = (
-        ('Active', 'Active'),
-        ('Inactive', 'Inactive'),
-    )
     city = models.ForeignKey(City, on_delete=models.CASCADE)
-    title = models.CharField(max_length=500)
+    title = models.CharField(max_length=500, unique=True)
     type_of_listing = models.ForeignKey(
         ListingType, on_delete=models.CASCADE, related_name='type_of_listing')
     authour = models.ForeignKey(
         UserProfile, on_delete=models.CASCADE, related_name='authour_by')
-    status = models.CharField(
-        max_length=10, choices=STATUS_CHOICES, default='Active')
+    is_published = models.BooleanField(default=False)
     slug = models.CharField(max_length=1000, unique=True)
     price = models.FloatField()
-    description = SummernoteTextField(blank=True)
+    description = RichTextField(blank=True)
     project_address = models.CharField(max_length=500)
-    postalcode = models.CharField(max_length=200)
-    latitute = models.CharField(max_length=10)
+    latitude = models.CharField(max_length=10)
     longitude = models.CharField(max_length=10)
     date_of_upload = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.project_name + " [ " + self.city.name+" ] "
+        return self.title + " [ " + self.city.name+" ] "
 
     class Meta:
         ordering = ('-updated_date',)
