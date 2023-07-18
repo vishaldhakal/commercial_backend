@@ -1,4 +1,4 @@
-from .serializers import ListingSerializer
+from .serializers import ListingSerializer, ListingSerializerSmall
 from .models import Listing
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import render
@@ -9,8 +9,8 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from rest_framework import status
-from .models import City, ListingType
-from .serializers import CitySerializer, ListingTypeSerializer, CitySerializerSmall
+from .models import City, ListingType, ListingImage
+from .serializers import CitySerializer, ListingTypeSerializer, CitySerializerSmall, ListingImageSerializer
 from django.shortcuts import get_object_or_404
 from account.models import UserProfile
 from account.serializers import UserProfileSerializer, UserProfileDetailSerializer
@@ -141,8 +141,8 @@ def delete_listingtype(request):
 @api_view(['GET'])
 def listing_list(request):
     listings = Listing.objects.all()
-    serializer = ListingSerializer(listings, many=True)
-    return Response(serializer.data)
+    serializer = ListingSerializerSmall(listings, many=True)
+    return Response({"listings": serializer.data})
 
 
 @api_view(['POST'])
@@ -156,8 +156,6 @@ def create_listing(request):
     price = request.POST.get('price')
     description = request.POST.get('description')
     project_address = request.POST.get('project_address')
-    latitude = request.POST.get('latitude')
-    longitude = request.POST.get('longitude')
     is_published = request.POST.get('is_published', "False") == "True"
 
     # Retrieve the city instance
@@ -181,10 +179,13 @@ def create_listing(request):
         price=price,
         description=description,
         project_address=project_address,
-        latitude=latitude,
-        longitude=longitude
     )
     listing.save()
+
+    files = request.FILES.getlist('image')
+    for file in files:
+        img = ListingImage.objects.create(image=file, listing=listing)
+        img.save()
 
     return Response({'success': "Successfully created Listing"})
 
@@ -201,7 +202,7 @@ def listing_upload_initials(request):
 @api_view(['GET'])
 def get_listing(request):
     listings = Listing.objects.all()
-    serializer = ListingSerializer(listings, many=True)
+    serializer = ListingSerializerSmall(listings, many=True)
     return Response({"listings": serializer.data})
 
 
@@ -224,8 +225,6 @@ def update_listing(request):
     price = request.POST.get('price')
     description = request.POST.get('description')
     project_address = request.POST.get('project_address')
-    latitude = request.POST.get('latitude')
-    longitude = request.POST.get('longitude')
     is_published = request.POST.get('is_published', "False") == "True"
 
     # Retrieve the listing type instance
@@ -239,10 +238,13 @@ def update_listing(request):
     listing.price = price
     listing.description = description
     listing.project_address = project_address
-    listing.latitude = latitude
-    listing.longitude = longitude
 
     listing.save()
+    files = request.FILES.getlist('image')
+    for file in files:
+        img = ListingImage.objects.create(image=file, listing=listing)
+        img.save()
+
     return Response({'success': "Successfully updated Listing"})
 
 
@@ -269,3 +271,15 @@ def delete_listing(request):
     listing.delete()
 
     return Response({'success': "Successfully deleted Listing"})
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_image(request):
+    id = request.GET.get("id")
+    listingimg = get_object_or_404(ListingImage, id=id)
+
+    # Delete the listing
+    listingimg.delete()
+
+    return Response({'success': "Successfully deleted image"})

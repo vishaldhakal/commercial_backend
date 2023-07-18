@@ -14,7 +14,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8081',
-                        'https://4774-103-186-197-190.ngrok-free.app']
+                        'https://6e44-103-186-197-53.ngrok-free.app']
 
 # Application definition
 
@@ -74,10 +74,21 @@ WSGI_APPLICATION = 'commercial.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+} """
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'commercial',
+        'USER': 'vishal',
+        'PASSWORD': 'DatabaseUserPassword',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 

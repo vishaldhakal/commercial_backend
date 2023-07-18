@@ -14,7 +14,6 @@ urlpatterns = [
     path('listingtypes/', views.get_listingtype, name='get_listingtype'),
     path('listingtype-detail/', views.listingtype_detail,
          name='listingtype_detail'),
-
     path('delete-listingtype/', views.delete_listingtype,
          name='delete_listingtypes'),
     path('listing-upload-initials/', views.listing_upload_initials,
@@ -25,5 +24,5 @@ urlpatterns = [
     path('update-listing/', views.update_listing, name='update-listing'),
     path('publish-listing/', views.publish_listing, name='publish-listing'),
     path('delete-listing/', views.delete_listing, name='delete-listing'),
-
+    path('delete-image/', views.delete_image, name='delete-image'),
 ]

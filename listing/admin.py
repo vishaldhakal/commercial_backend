@@ -31,8 +31,5 @@ class ListingAdmin(admin.ModelAdmin):
 
 @admin.register(ListingImage)
 class ListingImageAdmin(admin.ModelAdmin):
-    list_display = ('listing', 'image_alt')
+    list_display = ('listing',)
     list_filter = ('listing',)
-
-
-# Register your models here.

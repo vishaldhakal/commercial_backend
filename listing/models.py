@@ -31,24 +31,21 @@ class Listing(models.Model):
     price = models.FloatField()
     description = RichTextField(blank=True)
     project_address = models.CharField(max_length=500)
-    latitude = models.CharField(max_length=10)
-    longitude = models.CharField(max_length=10)
-    date_of_upload = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title + " [ " + self.city.name+" ] "
 
     class Meta:
-        ordering = ('-updated_date',)
+        ordering = ('-updated_at',)
 
 
 class ListingImage(models.Model):
     listing = models.ForeignKey(
         Listing, on_delete=models.CASCADE, related_name='images')
     image = models.FileField()
-    image_alt = models.CharField(max_length=500, default="image alt tag")
 
     def __str__(self):
-        if self.images:
-            return self.images.url+","+self.imagealt
+        if self.image:
+            return self.image.url
