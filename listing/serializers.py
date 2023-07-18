@@ -29,12 +29,12 @@ class ListingImageSerializer(serializers.ModelSerializer):
 class ListingSerializerSmall(serializers.ModelSerializer):
     city = CitySerializer()
     type_of_listing = ListingTypeSerializer()
-    images = serializers.StringRelatedField(many=True)
+    images = ListingImageSerializer(many=True)
 
     class Meta:
         model = Listing
         fields = ('city', 'type_of_listing', 'images', 'price',
-                  'created_at', 'title', 'is_published', 'price', 'slug')
+                  'created_at', 'title', 'project_address', 'price', 'slug')
 
 
 class ListingSerializer(serializers.ModelSerializer):

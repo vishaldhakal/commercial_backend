@@ -217,8 +217,8 @@ def listing_detail(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_listing(request):
-    p_slug = request.GET.get("p_slug")
-    slug = request.GET.get("slug")
+    p_slug = request.POST.get("p_slug")
+    slug = request.POST.get("slug")
     listing = get_object_or_404(Listing, slug=p_slug)
     title = request.POST.get('title')
     listing_type = request.POST.get('listing_type')
