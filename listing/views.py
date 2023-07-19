@@ -145,6 +145,14 @@ def listing_list(request):
     return Response({"listings": serializer.data})
 
 
+@api_view(['GET'])
+def listing_list_city(request, city):
+    cityyyy = City.objects.get(slug=city)
+    listings = Listing.objects.filter(city=cityyyy)
+    serializer = ListingSerializerSmall(listings, many=True)
+    return Response({"listings": serializer.data})
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_listing(request):

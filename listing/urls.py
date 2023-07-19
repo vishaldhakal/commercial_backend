@@ -19,6 +19,8 @@ urlpatterns = [
     path('listing-upload-initials/', views.listing_upload_initials,
          name='listing_upload_initials'),
     path('listings/', views.listing_list, name='listing-list'),
+    path('listings-city/<str:city>/',
+         views.listing_list_city, name='listing-list-city'),
     path('create-listing/', views.create_listing, name='create-listing'),
     path('listing-detail/', views.listing_detail, name='listing-detail'),
     path('update-listing/', views.update_listing, name='update-listing'),
