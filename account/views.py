@@ -137,22 +137,19 @@ def create_user_profile(request):
 @permission_classes([IsAuthenticated])
 def get_user_profile(request):
     user = request.user
-    if user.is_verified:
-        data = {
-            'user': {
-                'id': user.id,
-                'email': user.email,
-                'displayName': user.first_name+" "+user.last_name,
-                'role': user.role,
-                'photoURL': user.avatar or " ",
-                'address': user.address,
-                'about': user.bio,
-                'phoneNumber': user.phone_number,
-            }
+    data = {
+        'user': {
+            'id': user.id,
+            'email': user.email,
+            'displayName': user.first_name+" "+user.last_name,
+            'role': user.role,
+            'photoURL': user.avatar or " ",
+            'address': user.address,
+            'about': user.bio,
+            'phoneNumber': user.phone_number,
         }
-        return Response(data, status=200)
-    else:
-        return Response({"detail": "User not verified"}, status=403)
+    }
+    return Response(data, status=200)
 
 
 @api_view(['GET'])
