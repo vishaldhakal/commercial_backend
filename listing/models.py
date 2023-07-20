@@ -14,6 +14,7 @@ class City(models.Model):
 
 class ListingType(models.Model):
     listing_type = models.CharField(max_length=1000, unique=True)
+    details = RichTextField(blank=True)
 
     def __str__(self):
         return self.listing_type
