@@ -34,6 +34,7 @@ class Listing(models.Model):
     project_address = models.CharField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    square_footage = models.FloatField(default=0)
 
     def __str__(self):
         return self.title + " [ " + self.city.name+" ] "

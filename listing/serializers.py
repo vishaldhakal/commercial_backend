@@ -34,7 +34,7 @@ class ListingSerializerSmall(serializers.ModelSerializer):
     class Meta:
         model = Listing
         fields = ('city', 'type_of_listing', 'images', 'price',
-                  'created_at', 'title', 'project_address', 'price', 'slug')
+                  'created_at', 'title', 'project_address', 'price', 'slug', 'square_footage')
 
 
 class ListingSerializer(serializers.ModelSerializer):
