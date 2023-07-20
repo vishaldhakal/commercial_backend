@@ -88,11 +88,12 @@ def delete_city(request):
 @api_view(['POST'])
 def create_listingtype(request):
     listing_type = request.POST.get('listing_type')
+    details = request.POST.get('details')
 
     if not listing_type:
         return Response({'error': 'Listing type is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    listingtype = ListingType(listing_type=listing_type)
+    listingtype = ListingType(listing_type=listing_type, details=details)
     listingtype.save()
 
     return Response({'success': "Successfully created Listing Type"})
@@ -118,11 +119,13 @@ def update_listingtype(request):
     id = request.GET.get("id")
     listingtype = get_object_or_404(ListingType, id=id)
     listing_type = request.POST.get('listing_type')
+    details = request.POST.get('details')
 
     if not listing_type:
         return Response({'error': 'Listing type is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
     listingtype.listing_type = listing_type
+    listingtype.details = details
     listingtype.save()
     return Response({'success': "Successfully updated Listing Type"})
 
@@ -149,6 +152,14 @@ def listing_list(request):
 def listing_list_city(request, city):
     cityyyy = City.objects.get(slug=city)
     listings = Listing.objects.filter(city=cityyyy)
+    serializer = ListingSerializerSmall(listings, many=True)
+    return Response({"listings": serializer.data})
+
+
+@api_view(['GET'])
+def listing_list_type(request, type):
+    type_of_listingg = ListingType.objects.get(listing_type=type)
+    listings = Listing.objects.filter(type_of_listing=type_of_listingg)
     serializer = ListingSerializerSmall(listings, many=True)
     return Response({"listings": serializer.data})
 
