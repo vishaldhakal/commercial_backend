@@ -174,6 +174,7 @@ def create_listing(request):
     listing_type = request.POST.get('listing_type')
     title = request.POST.get('title')
     square_footage = request.POST.get('square_footage', 0)
+    acerage = request.POST.get('acerage', 0)
     author_id = request.user.id
     slug = request.POST.get('slug')
     price = request.POST.get('price')
@@ -195,6 +196,7 @@ def create_listing(request):
     listing = Listing(
         city=city,
         title=title,
+        acerage=acerage,
         square_footage=square_footage,
         type_of_listing=type_of_listings,
         authour=author,
@@ -250,7 +252,8 @@ def update_listing(request):
     listing = get_object_or_404(Listing, slug=p_slug)
     title = request.POST.get('title')
     listing_type = request.POST.get('listing_type')
-    square_footage = request.POST.get('square_footage')
+    square_footage = request.POST.get('square_footage', 0)
+    acerage = request.POST.get('acerage', 0)
     price = request.POST.get('price')
     description = request.POST.get('description')
     project_address = request.POST.get('project_address')
@@ -261,6 +264,7 @@ def update_listing(request):
         listing_type=listing_type)
 
     listing.title = title
+    listing.acerage = acerage
     listing.slug = slug
     listing.listing_type = type_of_listing
     listing.is_published = is_published

@@ -35,6 +35,7 @@ class Listing(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     square_footage = models.FloatField(default=0)
+    acerage = models.FloatField(default=0)
     additional_data = models.JSONField(default=dict)
 
     def __str__(self):
