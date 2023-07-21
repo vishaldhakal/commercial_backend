@@ -14,7 +14,9 @@ class City(models.Model):
 
 class ListingType(models.Model):
     slug = models.CharField(max_length=1000, blank=True)
+    thumbnail_image = models.FileField(blank=True, null=True)
     listing_type = models.CharField(max_length=1000, unique=True)
+    short_description = models.TextField(blank=True)
     details = RichTextField(blank=True)
 
     def __str__(self):

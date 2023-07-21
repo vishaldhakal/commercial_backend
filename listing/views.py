@@ -90,11 +90,14 @@ def delete_city(request):
 def create_listingtype(request):
     listing_type = request.POST.get('listing_type')
     details = request.POST.get('details')
+    short_description = request.POST.get('short_description')
+    thumbnail_image = request.FILES.get('thumbnail_image')
 
     if not listing_type:
         return Response({'error': 'Listing type is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    listingtype = ListingType(listing_type=listing_type, details=details)
+    listingtype = ListingType(
+        listing_type=listing_type, details=details, short_description=short_description, thumbnail_image=thumbnail_image)
     listingtype.save()
 
     return Response({'success': "Successfully created Listing Type"})
@@ -122,6 +125,8 @@ def update_listingtype(request):
     listingtype = get_object_or_404(ListingType, id=idd)
     listing_type = request.POST.get('listing_type')
     details = request.POST.get('details')
+    short_description = request.POST.get('short_description')
+    thumbnail_image = request.FILES.get('thumbnail_image')
 
     if not listing_type:
         return Response({'error': 'Listing type is required.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -129,6 +134,8 @@ def update_listingtype(request):
     listingtype.listing_type = listing_type
     listingtype.details = details
     listingtype.slug = slug
+    listingtype.thumbnail_image = thumbnail_image
+    listingtype.short_description = short_description
     listingtype.save()
     return Response({'success': "Successfully updated Listing Type"})
 
