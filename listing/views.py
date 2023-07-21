@@ -133,7 +133,7 @@ def update_listingtype(request):
     return Response({'success': "Successfully updated Listing Type"})
 
 
-@api_view(['POST'])
+@api_view(['DELETE'])
 def delete_listingtype(request):
     slug = request.GET.get("slug")
     listingtype = get_object_or_404(ListingType, slug=slug)
