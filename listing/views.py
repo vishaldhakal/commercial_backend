@@ -1,3 +1,4 @@
+import json
 from .serializers import ListingSerializer, ListingSerializerSmall
 from .models import Listing
 from rest_framework.decorators import api_view, permission_classes
@@ -167,10 +168,12 @@ def listing_list_type(request, type):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_listing(request):
+    additional_dataa = request.POST.get("additional_data")
+    additional_data = json.loads(additional_dataa) if additional_dataa else {}
     city_name = request.POST.get('city_name')
     listing_type = request.POST.get('listing_type')
     title = request.POST.get('title')
-    square_footage = request.POST.get('square_footage')
+    square_footage = request.POST.get('square_footage', 0)
     author_id = request.user.id
     slug = request.POST.get('slug')
     price = request.POST.get('price')
@@ -200,6 +203,7 @@ def create_listing(request):
         price=price,
         description=description,
         project_address=project_address,
+        additional_data=additional_data,
     )
     listing.save()
 
@@ -238,6 +242,9 @@ def listing_detail(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_listing(request):
+    additional_dataa = request.POST.get("additional_data")
+    additional_data = json.loads(additional_dataa) if additional_dataa else {}
+
     p_slug = request.POST.get("p_slug")
     slug = request.POST.get("slug")
     listing = get_object_or_404(Listing, slug=p_slug)
@@ -261,6 +268,7 @@ def update_listing(request):
     listing.description = description
     listing.square_footage = square_footage
     listing.project_address = project_address
+    listing.additional_data = additional_data
 
     listing.save()
     files = request.FILES.getlist('image')
