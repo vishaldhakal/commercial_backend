@@ -13,6 +13,7 @@ class City(models.Model):
 
 
 class ListingType(models.Model):
+    slug = models.CharField(max_length=1000, blank=True)
     listing_type = models.CharField(max_length=1000, unique=True)
     details = RichTextField(blank=True)
 

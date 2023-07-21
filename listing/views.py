@@ -109,16 +109,17 @@ def get_listingtype(request):
 
 @api_view(['GET'])
 def listingtype_detail(request):
-    idd = request.GET.get("id")
-    listingg = get_object_or_404(ListingType, id=idd)
+    slug = request.GET.get("slug")
+    listingg = get_object_or_404(ListingType, slug=slug)
     serializers = ListingTypeSerializer(listingg)
     return Response({"listing_type": serializers.data})
 
 
 @api_view(['POST'])
 def update_listingtype(request):
-    id = request.GET.get("id")
-    listingtype = get_object_or_404(ListingType, id=id)
+    idd = request.POST.get("id")
+    slug = request.POST.get("slug")
+    listingtype = get_object_or_404(ListingType, id=idd)
     listing_type = request.POST.get('listing_type')
     details = request.POST.get('details')
 
@@ -127,14 +128,15 @@ def update_listingtype(request):
 
     listingtype.listing_type = listing_type
     listingtype.details = details
+    listingtype.slug = slug
     listingtype.save()
     return Response({'success': "Successfully updated Listing Type"})
 
 
 @api_view(['POST'])
 def delete_listingtype(request):
-    id = request.GET.get("id")
-    listingtype = get_object_or_404(ListingType, id=id)
+    slug = request.GET.get("slug")
+    listingtype = get_object_or_404(ListingType, slug=slug)
 
     # Delete the listing type
     listingtype.delete()
@@ -158,8 +160,8 @@ def listing_list_city(request, city):
 
 
 @api_view(['GET'])
-def listing_list_type(request, type):
-    type_of_listingg = ListingType.objects.get(listing_type=type)
+def listing_list_type(request, slug):
+    type_of_listingg = ListingType.objects.get(slug=slug)
     listings = Listing.objects.filter(type_of_listing=type_of_listingg)
     serializer = ListingSerializerSmall(listings, many=True)
     return Response({"listings": serializer.data})
