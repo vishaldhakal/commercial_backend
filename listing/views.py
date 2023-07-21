@@ -89,6 +89,7 @@ def delete_city(request):
 @api_view(['POST'])
 def create_listingtype(request):
     listing_type = request.POST.get('listing_type')
+    slug = request.POST.get('slug')
     details = request.POST.get('details')
     short_description = request.POST.get('short_description')
     thumbnail_image = request.FILES.get('thumbnail_image')
@@ -96,8 +97,8 @@ def create_listingtype(request):
     if not listing_type:
         return Response({'error': 'Listing type is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    listingtype = ListingType(
-        listing_type=listing_type, details=details, short_description=short_description, thumbnail_image=thumbnail_image)
+    listingtype = ListingType(slug=slug,
+                              listing_type=listing_type, details=details, short_description=short_description, thumbnail_image=thumbnail_image)
     listingtype.save()
 
     return Response({'success': "Successfully created Listing Type"})
