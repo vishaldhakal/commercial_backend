@@ -81,6 +81,7 @@ WSGI_APPLICATION = 'commercial.wsgi.application'
     }
 } """
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = None
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
