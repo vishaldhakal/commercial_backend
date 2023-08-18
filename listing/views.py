@@ -194,7 +194,7 @@ def create_listing(request):
 
     latest_object = Listing.objects.latest('id')
     latest_id = latest_object.id
-    slug2 = slug+latest_id+1
+    slug2 = slug+str(latest_id)+str(1)
 
     # Retrieve the city instance
     city = get_object_or_404(City, name=city_name)
@@ -273,7 +273,7 @@ def update_listing(request):
     project_address = request.POST.get('project_address')
     is_published = request.POST.get('is_published', "False") == "True"
 
-    slug2 = slug+listing.id
+    slug2 = slug+str(listing.id)
 
     # Retrieve the listing type instance
     type_of_listing = ListingType.objects.get_or_create(
