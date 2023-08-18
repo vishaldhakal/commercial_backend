@@ -194,7 +194,7 @@ def create_listing(request):
 
     latest_object = Listing.objects.latest('id')
     latest_id = latest_object.id
-    slug2 = slug+latest_id
+    slug2 = slug+latest_id+1
 
     # Retrieve the city instance
     city = get_object_or_404(City, name=city_name)
