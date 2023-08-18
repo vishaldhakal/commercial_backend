@@ -192,6 +192,10 @@ def create_listing(request):
     project_address = request.POST.get('project_address')
     is_published = request.POST.get('is_published', "False") == "True"
 
+    latest_object = Listing.objects.latest('id')
+    latest_id = latest_object.id
+    slug2 = slug+latest_id
+
     # Retrieve the city instance
     city = get_object_or_404(City, name=city_name)
 
@@ -210,7 +214,7 @@ def create_listing(request):
         square_footage=square_footage,
         type_of_listing=type_of_listings,
         authour=author,
-        slug=slug,
+        slug=slug2,
         is_published=is_published,
         price=price,
         description=description,
@@ -269,13 +273,15 @@ def update_listing(request):
     project_address = request.POST.get('project_address')
     is_published = request.POST.get('is_published', "False") == "True"
 
+    slug2 = slug+listing.id
+
     # Retrieve the listing type instance
     type_of_listing = ListingType.objects.get_or_create(
         listing_type=listing_type)
 
     listing.title = title
     listing.acerage = acerage
-    listing.slug = slug
+    listing.slug = slug2
     listing.listing_type = type_of_listing
     listing.is_published = is_published
     listing.price = price
