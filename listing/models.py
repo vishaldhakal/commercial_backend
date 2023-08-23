@@ -25,7 +25,7 @@ class ListingType(models.Model):
 
 class Listing(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE)
-    title = models.CharField(max_length=500, unique=True)
+    title = models.CharField(max_length=500)
     type_of_listing = models.ForeignKey(
         ListingType, on_delete=models.CASCADE, related_name='type_of_listing')
     authour = models.ForeignKey(
