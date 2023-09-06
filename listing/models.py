@@ -40,6 +40,7 @@ class Listing(models.Model):
     square_footage = models.FloatField(default=0)
     acerage = models.FloatField(default=0)
     additional_data = models.JSONField(default=dict)
+    listing_pdf = models.FileField(blank=True, null=True)
 
     def __str__(self):
         return self.title + " [ " + self.city.name+" ] "

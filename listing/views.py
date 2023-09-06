@@ -189,6 +189,7 @@ def create_listing(request):
     slug = request.POST.get('slug')
     price = request.POST.get('price')
     description = request.POST.get('description')
+    listing_pdf = request.FILES.get('listing_pdf')
     project_address = request.POST.get('project_address')
     is_published = request.POST.get('is_published', "False") == "True"
 
@@ -222,6 +223,10 @@ def create_listing(request):
         additional_data=additional_data,
     )
     listing.save()
+
+    if listing_pdf:
+        listing.listing_pdf = listing_pdf
+        listing.save()
 
     files = request.FILES.getlist('image')
     for file in files:
@@ -272,6 +277,7 @@ def update_listing(request):
     description = request.POST.get('description')
     project_address = request.POST.get('project_address')
     is_published = request.POST.get('is_published', "False") == "True"
+    listing_pdf = request.FILES.get('listing_pdf')
 
     slug2 = slug+str(listing.id)
 
@@ -289,6 +295,9 @@ def update_listing(request):
     listing.square_footage = square_footage
     listing.project_address = project_address
     listing.additional_data = additional_data
+
+    if listing_pdf:
+        listing.listing_pdf = listing_pdf
 
     listing.save()
     files = request.FILES.getlist('image')
