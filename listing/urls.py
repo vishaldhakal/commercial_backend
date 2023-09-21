@@ -29,4 +29,6 @@ urlpatterns = [
     path('publish-listing/', views.publish_listing, name='publish-listing'),
     path('delete-listing/', views.delete_listing, name='delete-listing'),
     path('delete-image/', views.delete_image, name='delete-image'),
+    path('submit-contact-form/', views.submit_contact_form,
+         name='submit-contact-form'),
 ]
