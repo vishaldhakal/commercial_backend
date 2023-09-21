@@ -346,6 +346,7 @@ def delete_image(request):
     return Response({'success': "Successfully deleted image"})
 
 
+@api_view(["POST"])
 def submit_contact_form(request):
     name = request.POST.get("full_name")
     email = request.POST.get("email")
