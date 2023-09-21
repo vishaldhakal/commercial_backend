@@ -360,7 +360,7 @@ def submit_contact_form(request):
     body = f"Name: {name}\nEmail: {email}\nPhone: {phone}\nMessage: {message}"
 
     email = EmailMessage(subject, body, emaill, [
-                         "milan@homebaba.ca"], reply_to=[email], headers=headers)
+                         "salimanazeer@hotmail.com"], reply_to=[email], headers=headers)
     email.send(fail_silently=False)
 
     return Response({'success': "Successfully submitted form"}, status=status.HTTP_200_OK)
